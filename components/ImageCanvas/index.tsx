@@ -2,11 +2,11 @@ import { useRef, useEffect } from "react";
 
 import { EditingData } from "../ImageEditor/useEditingDatas";
 
-const DISPLAY_SCALE = 0.1;
+const DISPLAY_SCALE = 3;
 
-const WIDTH = 11200;
-const HEIGHT = 7700;
-const CANVAS_IMAGE_SIZE = 3700;
+const WIDTH = 1120 * DISPLAY_SCALE;
+const HEIGHT = 770 * DISPLAY_SCALE;
+const CANVAS_IMAGE_SIZE = 370 * DISPLAY_SCALE;
 
 type Props = EditingData & {
   isVisible: boolean;
@@ -17,6 +17,7 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
   const ctx = useRef<CanvasRenderingContext2D>();
 
   const imageData = useRef<ImageData>();
+  const brightnessMax = useRef<number>();
 
   const dx = useRef<number>();
   const dy = useRef<number>();
@@ -24,7 +25,6 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
   const height = useRef<number>();
 
   useEffect(() => {
-    console.log("hi");
     init(src);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src]);
@@ -65,8 +65,20 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
         initialData.width,
         initialData.height
       );
+      setBrightnessMax(initialData.data);
     };
     image.src = url;
+  };
+
+  const setBrightnessMax = (data: Uint8ClampedArray) => {
+    let dpc = 255;
+    for (let i = 0; i < data.length; i += 1) {
+      const color = data[i];
+      if (color < dpc && color > 100) {
+        dpc = color;
+      }
+    }
+    brightnessMax.current = 255 / dpc;
   };
 
   const renderImage = () => {
@@ -79,49 +91,54 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
       imageData.current.width,
       imageData.current.height
     );
-    if (options.brightness != null) {
-      _imageData = brightness(_imageData, options.brightness);
+
+    const applyBrightness = brightness(options.brightness);
+    const applyExposure = exposure(options.exposure);
+
+    for (let i = 0; i < _imageData.data.length; i += 4) {
+      if (options.brightness != null && options.brightness !== 50) {
+        _imageData.data[i] = applyBrightness(_imageData.data[i]);
+        _imageData.data[i + 1] = applyBrightness(_imageData.data[i + 1]);
+        _imageData.data[i + 2] = applyBrightness(_imageData.data[i + 2]);
+      }
+      if (options.exposure != null && options.exposure !== 50) {
+        _imageData.data[i] = applyExposure(_imageData.data[i]);
+        _imageData.data[i + 1] = applyExposure(_imageData.data[i + 1]);
+        _imageData.data[i + 2] = applyExposure(_imageData.data[i + 2]);
+      }
     }
 
     ctx.current.putImageData(_imageData, dx.current, dy.current);
   };
 
-  const brightness = (_imageData: ImageData, percent: number) => {
-    let dpc = 255;
-    for (let i = 0; i < imageData.current.data.length; i += 1) {
-      const color = imageData.current.data[i];
-      if (color < dpc && color > 100) {
-        dpc = color;
-      }
-    }
-    const max = 255 / dpc;
-
+  const brightness = (percent: number) => {
     const brightnessMul =
       percent > 50
-        ? ((percent - 50) / 50) * (max - 1) + 1
+        ? ((percent - 50) / 50) * (brightnessMax.current - 1) + 1
         : (percent / 50) * 0.8 + 0.2;
 
-    for (let i = 0; i < _imageData.data.length; i += 4) {
-      _imageData.data[i] = _imageData.data[i] * brightnessMul;
-      _imageData.data[i + 1] = _imageData.data[i + 1] * brightnessMul;
-      _imageData.data[i + 2] = _imageData.data[i + 2] * brightnessMul;
-    }
+    return (input: number) => input * brightnessMul;
+  };
 
-    return _imageData;
+  const exposure = (percent: number) => {
+    const gamma = percent / 100 + 0.5;
+    const adjustment = 1 / gamma;
+
+    return (input: number) => Math.pow(input / 255, adjustment) * 255;
   };
 
   useEffect(() => {
     renderImage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options.brightness]);
+  }, [options.brightness, options.exposure]);
 
   return (
     <canvas
       ref={canvasRef}
       style={{
         display: isVisible ? "flex" : "none",
-        width: `${WIDTH * DISPLAY_SCALE}px`,
-        height: `${HEIGHT * DISPLAY_SCALE}px`,
+        width: `${WIDTH / DISPLAY_SCALE}px`,
+        height: `${HEIGHT / DISPLAY_SCALE}px`,
         background: "#333",
       }}
     />
