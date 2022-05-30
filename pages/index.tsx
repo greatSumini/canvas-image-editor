@@ -1,6 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 
+import ImageEditor from "../components/ImageEditor";
+
 const Home: NextPage = () => {
   return (
     <div>
@@ -11,6 +13,7 @@ const Home: NextPage = () => {
       </Head>
 
       <h1>Hello Editor</h1>
+      <ImageEditor />
     </div>
   );
 };
