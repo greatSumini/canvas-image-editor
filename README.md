@@ -12,7 +12,7 @@ Sample Image Editor using HTML Canvas, Next.js
 
    - [x] exposure (노출)
    - [x] brightness (밝기)
-   - [ ] whites (화이트밸런스)
+   - [x] whitebalance (화이트밸런스)
    - [ ] contrast (대조)
    - [ ] clarity (선명도)
    - [ ] temparature (온도)

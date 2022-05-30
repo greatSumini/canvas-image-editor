@@ -2,6 +2,8 @@ import { useRef, useEffect } from "react";
 
 import { EditingData } from "../ImageEditor/useEditingDatas";
 
+import { brightness, exposure, whitebalance } from "./filters";
+
 const DISPLAY_SCALE = 3;
 
 const WIDTH = 1120 * DISPLAY_SCALE;
@@ -92,8 +94,12 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
       imageData.current.height
     );
 
-    const applyBrightness = brightness(options.brightness);
+    const applyBrightness = brightness(
+      brightnessMax.current,
+      options.brightness
+    );
     const applyExposure = exposure(options.exposure);
+    const applyWhitebalance = whitebalance(options.whitebalance);
 
     for (let i = 0; i < _imageData.data.length; i += 4) {
       if (options.brightness != null && options.brightness !== 50) {
@@ -106,31 +112,20 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
         _imageData.data[i + 1] = applyExposure(_imageData.data[i + 1]);
         _imageData.data[i + 2] = applyExposure(_imageData.data[i + 2]);
       }
+      if (options.whitebalance != null && options.whitebalance !== 50) {
+        _imageData.data[i] = applyWhitebalance(_imageData.data[i]);
+        _imageData.data[i + 1] = applyWhitebalance(_imageData.data[i + 1]);
+        _imageData.data[i + 2] = applyWhitebalance(_imageData.data[i + 2]);
+      }
     }
 
     ctx.current.putImageData(_imageData, dx.current, dy.current);
   };
 
-  const brightness = (percent: number) => {
-    const brightnessMul =
-      percent > 50
-        ? ((percent - 50) / 50) * (brightnessMax.current - 1) + 1
-        : (percent / 50) * 0.8 + 0.2;
-
-    return (input: number) => input * brightnessMul;
-  };
-
-  const exposure = (percent: number) => {
-    const gamma = percent / 100 + 0.5;
-    const adjustment = 1 / gamma;
-
-    return (input: number) => Math.pow(input / 255, adjustment) * 255;
-  };
-
   useEffect(() => {
     renderImage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options.brightness, options.exposure]);
+  }, [options.brightness, options.exposure, options.whitebalance]);
 
   return (
     <canvas

@@ -3,15 +3,15 @@ import { useState } from "react";
 export type EditingData = {
   src: string;
 
-  /** [0, 100] */
   brightness: number;
-  /** [0, 100] */
   exposure: number;
+  whitebalance: number;
 };
 
 export const INITIAL_EDITING_DATA: Omit<EditingData, "src"> = {
   brightness: 50,
   exposure: 50,
+  whitebalance: 50,
 };
 
 export const useEditingDatas = () => {
@@ -36,6 +36,8 @@ export const useEditingDatas = () => {
         ...currentData,
         brightness: clamp(0, input.brightness, 100) ?? currentData.brightness,
         exposure: clamp(0, input.exposure, 100) ?? currentData.exposure,
+        whitebalance:
+          clamp(0, input.whitebalance, 100) ?? currentData.whitebalance,
       },
       ...datas.slice(index + 1),
     ]);

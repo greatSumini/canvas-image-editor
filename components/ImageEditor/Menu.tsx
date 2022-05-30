@@ -39,6 +39,17 @@ export default function ImageEditorMenu({
           }
         />
       </div>
+      <div style={{ maxWidth: "540px" }}>
+        화이트밸런스
+        <Slider
+          defaultValue={50}
+          min={0}
+          max={100}
+          onAfterChange={(whitebalance: number) =>
+            onChange({ ...data, whitebalance })
+          }
+        />
+      </div>
     </>
   );
 }
