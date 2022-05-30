@@ -10,7 +10,7 @@ Sample Image Editor using HTML Canvas, Next.js
 
 1. Adjustments
 
-   - [ ] exposure (노출)
+   - [x] exposure (노출)
    - [x] brightness (밝기)
    - [ ] whites (화이트밸런스)
    - [ ] contrast (대조)
