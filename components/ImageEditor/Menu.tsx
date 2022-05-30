@@ -1,3 +1,5 @@
+import { Slider } from "antd";
+
 import { EditingData } from "./useEditingDatas";
 
 type MenuData = Omit<EditingData, "src">;
@@ -15,20 +17,17 @@ export default function ImageEditorMenu({
     return null;
   }
 
-  const diffBrightness = (diff: number) => {
-    onChange({ ...data, brightness: data.brightness + diff });
-  };
-
   return (
-    <div>
+    <div style={{ maxWidth: "540px" }}>
       밝기조정
-      <ul>
-        <li>
-          <button onClick={() => diffBrightness(+5)}>up</button>
-          {data.brightness}
-          <button onClick={() => diffBrightness(-5)}>down</button>
-        </li>
-      </ul>
+      <Slider
+        defaultValue={50}
+        min={0}
+        max={100}
+        onAfterChange={(brightness: number) =>
+          onChange({ ...data, brightness })
+        }
+      />
     </div>
   );
 }
