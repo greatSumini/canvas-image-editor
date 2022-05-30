@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import ImageCanvas from "../ImageCanvas";
+import Menu from "./Menu";
 
 import { useEditingDatas } from "./useEditingDatas";
 
@@ -26,28 +27,7 @@ export default function ImageEditor() {
 
   return (
     <>
-      <div>
-        밝기조정
-        <ul>
-          <li>
-            <button
-              onClick={() =>
-                setOption({ brightness: currentData.brightness + 5 })
-              }
-            >
-              up
-            </button>
-            {currentData.brightness}
-            <button
-              onClick={() =>
-                setOption({ brightness: currentData.brightness - 5 })
-              }
-            >
-              down
-            </button>
-          </li>
-        </ul>
-      </div>
+      <Menu data={currentData} onChange={setOption} />
       {datas.map((data, index) => (
         <ImageCanvas
           key={data.src}
