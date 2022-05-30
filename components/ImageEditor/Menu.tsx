@@ -18,16 +18,27 @@ export default function ImageEditorMenu({
   }
 
   return (
-    <div style={{ maxWidth: "540px" }}>
-      밝기조정
-      <Slider
-        defaultValue={50}
-        min={0}
-        max={100}
-        onAfterChange={(brightness: number) =>
-          onChange({ ...data, brightness })
-        }
-      />
-    </div>
+    <>
+      <div style={{ maxWidth: "540px" }}>
+        노출
+        <Slider
+          defaultValue={50}
+          min={0}
+          max={100}
+          onAfterChange={(exposure: number) => onChange({ ...data, exposure })}
+        />
+      </div>
+      <div style={{ maxWidth: "540px" }}>
+        밝기
+        <Slider
+          defaultValue={50}
+          min={0}
+          max={100}
+          onAfterChange={(brightness: number) =>
+            onChange({ ...data, brightness })
+          }
+        />
+      </div>
+    </>
   );
 }
