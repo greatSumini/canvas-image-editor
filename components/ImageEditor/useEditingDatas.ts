@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { clamp } from "../../helpers/math";
+
 export type EditingData = {
   src: string;
 
@@ -47,6 +49,3 @@ export const useEditingDatas = () => {
 
   return { datas, index, currentData, move, add, setOption };
 };
-
-const clamp = (min: number, input: number, max: number) =>
-  input != null ? Math.min(max, Math.max(min, input)) : null;
