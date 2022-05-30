@@ -102,23 +102,30 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     const applyWhitebalance = whitebalance(options.whitebalance);
     const applyContrast = contrast(options.contrast);
 
+    const isUpdated = {
+      brightness: options.brightness != null && options.brightness !== 50,
+      exposure: options.exposure != null && options.exposure !== 50,
+      whitebalance: options.whitebalance != null && options.whitebalance !== 50,
+      contrast: options.contrast != null && options.contrast !== 50,
+    };
+
     for (let i = 0; i < _imageData.data.length; i += 4) {
-      if (options.brightness != null && options.brightness !== 50) {
+      if (isUpdated.brightness) {
         _imageData.data[i] = applyBrightness(_imageData.data[i]);
         _imageData.data[i + 1] = applyBrightness(_imageData.data[i + 1]);
         _imageData.data[i + 2] = applyBrightness(_imageData.data[i + 2]);
       }
-      if (options.exposure != null && options.exposure !== 50) {
+      if (isUpdated.exposure) {
         _imageData.data[i] = applyExposure(_imageData.data[i]);
         _imageData.data[i + 1] = applyExposure(_imageData.data[i + 1]);
         _imageData.data[i + 2] = applyExposure(_imageData.data[i + 2]);
       }
-      if (options.whitebalance != null && options.whitebalance !== 50) {
+      if (isUpdated.whitebalance) {
         _imageData.data[i] = applyWhitebalance(_imageData.data[i]);
         _imageData.data[i + 1] = applyWhitebalance(_imageData.data[i + 1]);
         _imageData.data[i + 2] = applyWhitebalance(_imageData.data[i + 2]);
       }
-      if (options.contrast != null && options.contrast !== 50) {
+      if (isUpdated.contrast) {
         _imageData.data[i] = applyContrast(_imageData.data[i]);
         _imageData.data[i + 1] = applyContrast(_imageData.data[i + 1]);
         _imageData.data[i + 2] = applyContrast(_imageData.data[i + 2]);

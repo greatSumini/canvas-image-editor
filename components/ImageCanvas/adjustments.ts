@@ -26,8 +26,6 @@ export const whitebalance = (percent: number) => {
 export const contrast = (percent: number) => {
   const adjustment = Math.pow(((percent - 50) / 3 + 50) / 50, 2);
 
-  console.log(percent, adjustment);
-
   return (input: number) =>
     clamp(0, ((input / 255 - 0.5) * adjustment + 0.5) * 255, 255);
 };
