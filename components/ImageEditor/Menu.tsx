@@ -50,6 +50,15 @@ export default function ImageEditorMenu({
           }
         />
       </div>
+      <div style={{ maxWidth: "540px" }}>
+        대비
+        <Slider
+          defaultValue={50}
+          min={0}
+          max={100}
+          onAfterChange={(contrast: number) => onChange({ ...data, contrast })}
+        />
+      </div>
     </>
   );
 }

@@ -8,12 +8,14 @@ export type EditingData = {
   brightness: number;
   exposure: number;
   whitebalance: number;
+  contrast: number;
 };
 
 export const INITIAL_EDITING_DATA: Omit<EditingData, "src"> = {
   brightness: 50,
   exposure: 50,
   whitebalance: 50,
+  contrast: 50,
 };
 
 export const useEditingDatas = () => {
@@ -40,6 +42,7 @@ export const useEditingDatas = () => {
         exposure: clamp(0, input.exposure, 100) ?? currentData.exposure,
         whitebalance:
           clamp(0, input.whitebalance, 100) ?? currentData.whitebalance,
+        contrast: clamp(0, input.contrast, 100) ?? currentData.contrast,
       },
       ...datas.slice(index + 1),
     ]);

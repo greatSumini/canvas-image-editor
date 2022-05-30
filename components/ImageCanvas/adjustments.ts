@@ -1,3 +1,5 @@
+import { clamp } from "../../helpers/math";
+
 export const brightness = (max: number, percent: number) => {
   const brightnessMul =
     percent > 50
@@ -19,4 +21,13 @@ export const whitebalance = (percent: number) => {
     (percent < 50 ? 2 - percent / 50 : 1.125 - percent / 400) * 255;
 
   return (input: number) => input * (255 / adjustment);
+};
+
+export const contrast = (percent: number) => {
+  const adjustment = Math.pow(((percent - 50) / 3 + 50) / 50, 2);
+
+  console.log(percent, adjustment);
+
+  return (input: number) =>
+    clamp(0, ((input / 255 - 0.5) * adjustment + 0.5) * 255, 255);
 };

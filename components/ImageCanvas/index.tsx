@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 
 import { EditingData } from "../ImageEditor/useEditingDatas";
 
-import { brightness, exposure, whitebalance } from "./filters";
+import { brightness, contrast, exposure, whitebalance } from "./adjustments";
 
 const DISPLAY_SCALE = 3;
 
@@ -100,6 +100,7 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     );
     const applyExposure = exposure(options.exposure);
     const applyWhitebalance = whitebalance(options.whitebalance);
+    const applyContrast = contrast(options.contrast);
 
     for (let i = 0; i < _imageData.data.length; i += 4) {
       if (options.brightness != null && options.brightness !== 50) {
@@ -117,6 +118,11 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
         _imageData.data[i + 1] = applyWhitebalance(_imageData.data[i + 1]);
         _imageData.data[i + 2] = applyWhitebalance(_imageData.data[i + 2]);
       }
+      if (options.contrast != null && options.contrast !== 50) {
+        _imageData.data[i] = applyContrast(_imageData.data[i]);
+        _imageData.data[i + 1] = applyContrast(_imageData.data[i + 1]);
+        _imageData.data[i + 2] = applyContrast(_imageData.data[i + 2]);
+      }
     }
 
     ctx.current.putImageData(_imageData, dx.current, dy.current);
@@ -125,7 +131,12 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
   useEffect(() => {
     renderImage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options.brightness, options.exposure, options.whitebalance]);
+  }, [
+    options.brightness,
+    options.exposure,
+    options.whitebalance,
+    options.contrast,
+  ]);
 
   return (
     <canvas
