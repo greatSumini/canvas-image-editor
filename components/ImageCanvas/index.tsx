@@ -97,10 +97,14 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     const max = 255 / dpc;
 
     const brightnessMul =
-      percent > 50 ? ((percent - 50) / 50) * (max - 1) + 1 : percent / 50;
+      percent > 50
+        ? ((percent - 50) / 50) * (max - 1) + 1
+        : (percent / 50) * 0.8 + 0.2;
 
-    for (let i = 0; i < _imageData.data.length; i += 1) {
+    for (let i = 0; i < _imageData.data.length; i += 4) {
       _imageData.data[i] = _imageData.data[i] * brightnessMul;
+      _imageData.data[i + 1] = _imageData.data[i + 1] * brightnessMul;
+      _imageData.data[i + 2] = _imageData.data[i + 2] * brightnessMul;
     }
 
     return _imageData;
