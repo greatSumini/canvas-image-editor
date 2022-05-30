@@ -2,6 +2,10 @@
 
 Sample Image Editor using HTML Canvas, Next.js
 
+## Live Demo
+
+[Checkout](https://canvas-image-editor.vercel.app/)
+
 ## Features
 
 1. Adjustments
@@ -25,6 +29,8 @@ Sample Image Editor using HTML Canvas, Next.js
 
    - [ ] rotate
    - [ ] rotating ui
+
+4. Filter
 
 ## Getting Started
 
