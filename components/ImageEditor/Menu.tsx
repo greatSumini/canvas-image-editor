@@ -20,6 +20,15 @@ export default function ImageEditorMenu({
   return (
     <>
       <div style={{ maxWidth: "540px" }}>
+        선명도
+        <Slider
+          defaultValue={50}
+          min={0}
+          max={100}
+          onAfterChange={(clarity: number) => onChange({ ...data, clarity })}
+        />
+      </div>
+      <div style={{ maxWidth: "540px" }}>
         노출
         <Slider
           defaultValue={50}

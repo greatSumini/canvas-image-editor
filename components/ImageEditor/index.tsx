@@ -6,6 +6,7 @@ import Menu from "./Menu";
 import { useEditingDatas } from "./useEditingDatas";
 
 const IMAGES = [
+  "https://dfmarqni2tgyh.cloudfront.net/upload_images/20220531/demo_small.png",
   "https://dfmarqni2tgyh.cloudfront.net/swapped/20220516/132851_381760_1339.jpg",
   "https://dfmarqni2tgyh.cloudfront.net/upload_images/20220520/k_127767530.jpg",
 ];

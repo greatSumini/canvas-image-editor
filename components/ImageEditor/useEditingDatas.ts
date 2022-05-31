@@ -5,6 +5,7 @@ import { clamp } from "../../helpers/math";
 export type EditingData = {
   src: string;
 
+  clarity: number;
   brightness: number;
   exposure: number;
   whitebalance: number;
@@ -13,6 +14,7 @@ export type EditingData = {
 };
 
 export const INITIAL_EDITING_DATA: Omit<EditingData, "src"> = {
+  clarity: 50,
   brightness: 50,
   exposure: 50,
   whitebalance: 50,
@@ -40,6 +42,7 @@ export const useEditingDatas = () => {
       ...datas.slice(0, index),
       {
         ...currentData,
+        clarity: clamp(0, input.clarity, 100) ?? currentData.clarity,
         brightness: clamp(0, input.brightness, 100) ?? currentData.brightness,
         exposure: clamp(0, input.exposure, 100) ?? currentData.exposure,
         whitebalance:

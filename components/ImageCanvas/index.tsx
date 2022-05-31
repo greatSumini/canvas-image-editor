@@ -4,6 +4,7 @@ import { EditingData } from "../ImageEditor/useEditingDatas";
 
 import {
   brightness,
+  clarity,
   contrast,
   exposure,
   temparature,
@@ -120,12 +121,17 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     );
 
     const isUpdated = {
+      clarity: options.clarity != null && options.clarity !== 50,
       brightness: options.brightness != null && options.brightness !== 50,
       exposure: options.exposure != null && options.exposure !== 50,
       whitebalance: options.whitebalance != null && options.whitebalance !== 50,
       contrast: options.contrast != null && options.contrast !== 50,
       temparature: options.temparature != null && options.temparature !== 50,
     };
+
+    if (isUpdated.clarity) {
+      clarity(options.clarity)(_imageData);
+    }
 
     for (let i = 0; i < _imageData.data.length; i += 4) {
       if (isUpdated.brightness) {
@@ -161,6 +167,7 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     renderImage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    options.clarity,
     options.brightness,
     options.exposure,
     options.whitebalance,

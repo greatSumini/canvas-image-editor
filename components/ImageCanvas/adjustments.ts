@@ -1,4 +1,5 @@
 import { clamp } from "../../helpers/math";
+import { convolute } from "./convolute";
 
 export const brightness = (max: number, percent: number) => {
   const brightnessMul =
@@ -51,4 +52,27 @@ export const temparature = (
 
   return (input: number, type: "r" | "g" | "b") =>
     type === "r" ? redMul * input : type === "b" ? blueMul * input : input;
+};
+
+export const clarity = (percent: number) => {
+  if (percent > 50) {
+    const centerWeight = percent / 30 + 1;
+    const sideWeight = -(centerWeight - 1) / 4;
+
+    const weights = [
+      0,
+      sideWeight,
+      0,
+      sideWeight,
+      centerWeight,
+      sideWeight,
+      0,
+      sideWeight,
+      0,
+    ];
+
+    return (imageData: ImageData) => convolute(imageData, weights);
+  } else {
+    return (imageData: ImageData) => {};
+  }
 };
