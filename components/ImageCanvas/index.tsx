@@ -4,11 +4,9 @@ import { EditingData } from "../ImageEditor/useEditingDatas";
 
 import { brightness, contrast, exposure, whitebalance } from "./adjustments";
 
-const DISPLAY_SCALE = 3;
-
-const WIDTH = 1120 * DISPLAY_SCALE;
-const HEIGHT = 770 * DISPLAY_SCALE;
-const CANVAS_IMAGE_SIZE = 370 * DISPLAY_SCALE;
+const WIDTH = 1120;
+const HEIGHT = 770;
+const CANVAS_IMAGE_SIZE = 370;
 
 type Props = EditingData & {
   isVisible: boolean;
@@ -37,14 +35,15 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     image.onload = () => {
       const { current: canvas } = canvasRef;
 
-      canvas.width = WIDTH;
-      canvas.height = HEIGHT;
+      const scale = image.naturalWidth / CANVAS_IMAGE_SIZE;
 
-      dx.current = (WIDTH - CANVAS_IMAGE_SIZE) / 2;
-      dy.current = (HEIGHT - CANVAS_IMAGE_SIZE) / 2;
-      width.current = CANVAS_IMAGE_SIZE;
-      height.current =
-        (image.naturalHeight * CANVAS_IMAGE_SIZE) / image.naturalWidth;
+      canvas.width = WIDTH * scale;
+      canvas.height = HEIGHT * scale;
+
+      dx.current = ((WIDTH - CANVAS_IMAGE_SIZE) / 2) * scale;
+      dy.current = ((HEIGHT - CANVAS_IMAGE_SIZE) / 2) * scale;
+      width.current = image.naturalWidth;
+      height.current = image.naturalHeight;
 
       ctx.current = canvas.getContext("2d");
 
@@ -150,8 +149,8 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
       ref={canvasRef}
       style={{
         display: isVisible ? "flex" : "none",
-        width: `${WIDTH / DISPLAY_SCALE}px`,
-        height: `${HEIGHT / DISPLAY_SCALE}px`,
+        width: `${WIDTH}px`,
+        height: `${HEIGHT}px`,
         background: "#333",
       }}
     />
