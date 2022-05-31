@@ -72,7 +72,10 @@ export const clarity = (percent: number) => {
     ];
 
     return (imageData: ImageData) => convolute(imageData, weights);
-  } else {
-    return (imageData: ImageData) => {};
+  } else if (percent < 50) {
+    const radius = Math.floor((50 - percent) / 5) + 1;
+    const weights = [...Array(radius * radius)].fill(1 / (radius * radius));
+
+    return (imageData: ImageData) => convolute(imageData, weights);
   }
 };
