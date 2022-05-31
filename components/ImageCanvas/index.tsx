@@ -2,7 +2,13 @@ import { useRef, useEffect } from "react";
 
 import { EditingData } from "../ImageEditor/useEditingDatas";
 
-import { brightness, contrast, exposure, whitebalance } from "./adjustments";
+import {
+  brightness,
+  contrast,
+  exposure,
+  temparature,
+  whitebalance,
+} from "./adjustments";
 
 const WIDTH = 1120;
 const HEIGHT = 770;
@@ -18,6 +24,8 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
 
   const imageData = useRef<ImageData>();
   const brightnessMax = useRef<number>();
+  const redBrightnessMax = useRef<number>();
+  const blueBrightnessMax = useRef<number>();
 
   const dx = useRef<number>();
   const dy = useRef<number>();
@@ -72,14 +80,19 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
   };
 
   const setBrightnessMax = (data: Uint8ClampedArray) => {
-    let dpc = 255;
-    for (let i = 0; i < data.length; i += 1) {
-      const color = data[i];
-      if (color < dpc && color > 100) {
-        dpc = color;
-      }
+    let min = 255;
+    let redMin = 255;
+    let blueMin = 255;
+
+    for (let i = 0; i < data.length; i += 4) {
+      min = Math.min(min, data[i], data[i + 1], data[i + 2]);
+      redMin = Math.min(redMin, data[i]);
+      blueMin = Math.min(blueMin, data[i + 2]);
     }
-    brightnessMax.current = 255 / dpc;
+
+    brightnessMax.current = 255 / Math.max(100, min);
+    redBrightnessMax.current = 255 / Math.max(100, redMin);
+    blueBrightnessMax.current = 255 / Math.max(100, blueMin);
   };
 
   const renderImage = () => {
@@ -100,12 +113,18 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     const applyExposure = exposure(options.exposure);
     const applyWhitebalance = whitebalance(options.whitebalance);
     const applyContrast = contrast(options.contrast);
+    const applyTemparature = temparature(
+      redBrightnessMax.current,
+      blueBrightnessMax.current,
+      options.temparature
+    );
 
     const isUpdated = {
       brightness: options.brightness != null && options.brightness !== 50,
       exposure: options.exposure != null && options.exposure !== 50,
       whitebalance: options.whitebalance != null && options.whitebalance !== 50,
       contrast: options.contrast != null && options.contrast !== 50,
+      temparature: options.temparature != null && options.temparature !== 50,
     };
 
     for (let i = 0; i < _imageData.data.length; i += 4) {
@@ -129,6 +148,10 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
         _imageData.data[i + 1] = applyContrast(_imageData.data[i + 1]);
         _imageData.data[i + 2] = applyContrast(_imageData.data[i + 2]);
       }
+      if (isUpdated.temparature) {
+        _imageData.data[i] = applyTemparature(_imageData.data[i], "r");
+        _imageData.data[i + 2] = applyTemparature(_imageData.data[i + 2], "b");
+      }
     }
 
     ctx.current.putImageData(_imageData, dx.current, dy.current);
@@ -142,6 +165,7 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     options.exposure,
     options.whitebalance,
     options.contrast,
+    options.temparature,
   ]);
 
   return (

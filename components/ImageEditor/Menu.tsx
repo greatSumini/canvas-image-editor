@@ -59,6 +59,17 @@ export default function ImageEditorMenu({
           onAfterChange={(contrast: number) => onChange({ ...data, contrast })}
         />
       </div>
+      <div style={{ maxWidth: "540px" }}>
+        색온도
+        <Slider
+          defaultValue={50}
+          min={0}
+          max={100}
+          onAfterChange={(temparature: number) =>
+            onChange({ ...data, temparature })
+          }
+        />
+      </div>
     </>
   );
 }

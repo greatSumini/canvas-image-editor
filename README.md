@@ -15,7 +15,7 @@ Sample Image Editor using HTML Canvas, Next.js
    - [x] whitebalance (화이트밸런스)
    - [x] contrast (대조)
    - [ ] clarity (선명도)
-   - [ ] temparature (온도)
+   - [x] temparature (온도)
    - [ ] gamma (색조)
    - [ ] saturation (채도)
 

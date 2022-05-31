@@ -29,3 +29,26 @@ export const contrast = (percent: number) => {
   return (input: number) =>
     clamp(0, ((input / 255 - 0.5) * adjustment + 0.5) * 255, 255);
 };
+
+export const temparature = (
+  redMax: number,
+  blueMax: number,
+  percent: number
+) => {
+  const redWeight = percent;
+  const blueWeight = 100 - percent;
+
+  const intensity = 0.1;
+
+  const redMul =
+    redWeight > 50
+      ? ((redWeight - 50) / 50) * (redMax - 1) * intensity + 1
+      : (redWeight / 50) * intensity + (1 - intensity);
+  const blueMul =
+    blueWeight > 50
+      ? ((blueWeight - 50) / 50) * (blueMax - 1) * intensity + 1
+      : (blueWeight / 50) * intensity + (1 - intensity);
+
+  return (input: number, type: "r" | "g" | "b") =>
+    type === "r" ? redMul * input : type === "b" ? blueMul * input : input;
+};
