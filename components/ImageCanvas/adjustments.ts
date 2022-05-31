@@ -82,7 +82,7 @@ export const clarity = (percent: number) => {
 
 export const hsv = (saturation: number, hue: number) => {
   const v = 1;
-  const s = Math.pow(2, saturation / 50);
+  const s = Math.pow(2, (saturation - 50) / 50);
   const h = (((hue + 50) / 100) * 360 + 360) % 360;
 
   const vsu = v * s * Math.cos((h * Math.PI) / 180),

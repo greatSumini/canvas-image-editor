@@ -1,4 +1,4 @@
-import { Slider } from "antd";
+import { Slider, Switch } from "antd";
 
 import { EditingData } from "./useEditingDatas";
 
@@ -97,6 +97,15 @@ export default function ImageEditorMenu({
           onAfterChange={(saturation: number) =>
             onChange({ ...data, saturation })
           }
+        />
+      </div>
+      <div style={{ maxWidth: "540px" }}>
+        필터 - 빈티지
+        <Switch
+          checked={data.filter === "vintage"}
+          onChange={(to) => {
+            onChange({ ...data, filter: to ? "vintage" : null });
+          }}
         />
       </div>
     </>

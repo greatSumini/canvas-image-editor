@@ -32,6 +32,8 @@ Sample Image Editor using HTML Canvas, Next.js
 
 4. Filter
 
+   - [x] vintage
+
 ## Getting Started
 
 ```bash

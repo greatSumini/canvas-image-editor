@@ -13,6 +13,8 @@ export type EditingData = {
   temparature: number;
   hue: number;
   saturation: number;
+
+  filter: "vintage";
 };
 
 export const INITIAL_EDITING_DATA: Omit<EditingData, "src"> = {
@@ -24,6 +26,7 @@ export const INITIAL_EDITING_DATA: Omit<EditingData, "src"> = {
   temparature: 50,
   hue: 50,
   saturation: 50,
+  filter: null,
 };
 
 export const useEditingDatas = () => {
@@ -46,6 +49,7 @@ export const useEditingDatas = () => {
       ...datas.slice(0, index),
       {
         ...currentData,
+        ...input,
         clarity: clamp(0, input.clarity, 100) ?? currentData.clarity,
         brightness: clamp(0, input.brightness, 100) ?? currentData.brightness,
         exposure: clamp(0, input.exposure, 100) ?? currentData.exposure,
