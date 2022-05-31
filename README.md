@@ -16,8 +16,8 @@ Sample Image Editor using HTML Canvas, Next.js
    - [x] contrast (대조)
    - [x] clarity (선명도)
    - [x] temparature (온도)
-   - [ ] gamma (색조)
-   - [ ] saturation (채도)
+   - [x] gamma/hue (색조)
+   - [x] saturation (채도)
 
 2. Crop
 

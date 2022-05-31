@@ -79,3 +79,30 @@ export const clarity = (percent: number) => {
     return (imageData: ImageData) => convolute(imageData, weights);
   }
 };
+
+export const hsv = (saturation: number, hue: number) => {
+  const v = 1;
+  const s = Math.pow(2, saturation / 50);
+  const h = (((hue + 50) / 100) * 360 + 360) % 360;
+
+  const vsu = v * s * Math.cos((h * Math.PI) / 180),
+    vsw = v * s * Math.sin((h * Math.PI) / 180);
+  // (result spot)(source spot)
+  const rr = 0.299 * v + 0.701 * vsu + 0.167 * vsw,
+    rg = 0.587 * v - 0.587 * vsu + 0.33 * vsw,
+    rb = 0.114 * v - 0.114 * vsu - 0.497 * vsw;
+  const gr = 0.299 * v - 0.299 * vsu - 0.328 * vsw,
+    gg = 0.587 * v + 0.413 * vsu + 0.035 * vsw,
+    gb = 0.114 * v - 0.114 * vsu + 0.293 * vsw;
+  const br = 0.299 * v - 0.3 * vsu + 1.25 * vsw,
+    bg = 0.587 * v - 0.586 * vsu - 1.05 * vsw,
+    bb = 0.114 * v + 0.886 * vsu - 0.2 * vsw;
+
+  return (r: number, g: number, b: number) => {
+    return [
+      rr * r + rg * g + rb * b,
+      gr * r + gg * g + gb * b,
+      br * r + bg * g + bb * b,
+    ];
+  };
+};

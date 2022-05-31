@@ -7,6 +7,7 @@ import {
   clarity,
   contrast,
   exposure,
+  hsv,
   temparature,
   whitebalance,
 } from "./adjustments";
@@ -119,6 +120,7 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
       blueBrightnessMax.current,
       options.temparature
     );
+    const applyHsv = hsv(options.saturation, options.hue);
 
     const isUpdated = {
       clarity: options.clarity != null && options.clarity !== 50,
@@ -127,6 +129,9 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
       whitebalance: options.whitebalance != null && options.whitebalance !== 50,
       contrast: options.contrast != null && options.contrast !== 50,
       temparature: options.temparature != null && options.temparature !== 50,
+      hsv:
+        (options.hue != null && options.hue !== 50) ||
+        (options.saturation != null && options.saturation !== 50),
     };
 
     if (isUpdated.clarity) {
@@ -158,6 +163,16 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
         _imageData.data[i] = applyTemparature(_imageData.data[i], "r");
         _imageData.data[i + 2] = applyTemparature(_imageData.data[i + 2], "b");
       }
+      if (isUpdated.hsv) {
+        const [r, g, b] = applyHsv(
+          _imageData.data[i],
+          _imageData.data[i + 1],
+          _imageData.data[i + 2]
+        );
+        _imageData.data[i] = r;
+        _imageData.data[i + 1] = g;
+        _imageData.data[i + 2] = b;
+      }
     }
 
     ctx.current.putImageData(_imageData, dx.current, dy.current);
@@ -173,6 +188,8 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     options.whitebalance,
     options.contrast,
     options.temparature,
+    options.saturation,
+    options.hue,
   ]);
 
   return (

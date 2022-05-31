@@ -11,6 +11,8 @@ export type EditingData = {
   whitebalance: number;
   contrast: number;
   temparature: number;
+  hue: number;
+  saturation: number;
 };
 
 export const INITIAL_EDITING_DATA: Omit<EditingData, "src"> = {
@@ -20,6 +22,8 @@ export const INITIAL_EDITING_DATA: Omit<EditingData, "src"> = {
   whitebalance: 50,
   contrast: 50,
   temparature: 50,
+  hue: 50,
+  saturation: 50,
 };
 
 export const useEditingDatas = () => {
@@ -50,6 +54,8 @@ export const useEditingDatas = () => {
         contrast: clamp(0, input.contrast, 100) ?? currentData.contrast,
         temparature:
           clamp(0, input.temparature, 100) ?? currentData.temparature,
+        hue: clamp(0, input.hue, 100) ?? currentData.hue,
+        saturation: clamp(0, input.saturation, 100) ?? currentData.saturation,
       },
       ...datas.slice(index + 1),
     ]);

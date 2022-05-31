@@ -79,6 +79,26 @@ export default function ImageEditorMenu({
           }
         />
       </div>
+      <div style={{ maxWidth: "540px" }}>
+        색조
+        <Slider
+          defaultValue={50}
+          min={0}
+          max={100}
+          onAfterChange={(hue: number) => onChange({ ...data, hue })}
+        />
+      </div>
+      <div style={{ maxWidth: "540px" }}>
+        채토
+        <Slider
+          defaultValue={50}
+          min={0}
+          max={100}
+          onAfterChange={(saturation: number) =>
+            onChange({ ...data, saturation })
+          }
+        />
+      </div>
     </>
   );
 }
