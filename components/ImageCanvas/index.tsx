@@ -11,6 +11,7 @@ import {
   temparature,
   whitebalance,
 } from "./adjustments";
+import { grayscale, vintage } from "./filters";
 
 const WIDTH = 1120;
 const HEIGHT = 770;
@@ -122,40 +123,11 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     );
     const applyHsv = hsv(options.saturation, options.hue);
 
-    const applyVintage = (r: number, g: number, b: number) => {
-      let _r = r,
-        _g = g,
-        _b = b;
-
-      // const _brightness = brightness(brightnessMax.current, 40);
-      // _r = _brightness(_r);
-      // _g = _brightness(_g);
-      // _b = _brightness(_b);
-      const _exposure = exposure(55);
-      _r = _exposure(_r);
-      _g = _exposure(_g);
-      _b = _exposure(_b);
-      // const _whitebalance = whitebalance(40);
-      // _r = _whitebalance(_r);
-      // _g = _whitebalance(_g);
-      // _b = _whitebalance(_b);
-
-      const _temparature = temparature(
-        redBrightnessMax.current,
-        blueBrightnessMax.current,
-        75
-      );
-      _r = _temparature(_r, "r");
-      _g = _temparature(_g, "g");
-      _b = _temparature(_b, "b");
-
-      const hsvResult = hsv(25, 47)(_r, _g, _b);
-      _r = hsvResult[0];
-      _g = hsvResult[1];
-      _b = hsvResult[2];
-
-      return [_r, _g, _b];
-    };
+    const applyVintage = vintage(
+      redBrightnessMax.current,
+      blueBrightnessMax.current
+    );
+    const applyGrayscale = grayscale();
 
     const isUpdated = {
       clarity: options.clarity != null && options.clarity !== 50,
@@ -211,6 +183,15 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
 
       if (options.filter === "vintage") {
         const [r, g, b] = applyVintage(
+          _imageData.data[i],
+          _imageData.data[i + 1],
+          _imageData.data[i + 2]
+        );
+        _imageData.data[i] = r;
+        _imageData.data[i + 1] = g;
+        _imageData.data[i + 2] = b;
+      } else if (options.filter === "grayscale") {
+        const [r, g, b] = applyGrayscale(
           _imageData.data[i],
           _imageData.data[i + 1],
           _imageData.data[i + 2]

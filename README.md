@@ -33,6 +33,7 @@ Sample Image Editor using HTML Canvas, Next.js
 4. Filter
 
    - [x] vintage
+   - [x] grayscale
 
 ## Getting Started
 

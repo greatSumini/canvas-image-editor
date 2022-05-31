@@ -14,7 +14,7 @@ export type EditingData = {
   hue: number;
   saturation: number;
 
-  filter: "vintage";
+  filter: "vintage" | "grayscale";
 };
 
 export const INITIAL_EDITING_DATA: Omit<EditingData, "src"> = {

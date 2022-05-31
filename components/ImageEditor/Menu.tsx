@@ -108,6 +108,15 @@ export default function ImageEditorMenu({
           }}
         />
       </div>
+      <div style={{ maxWidth: "540px" }}>
+        필터 - 흑백
+        <Switch
+          checked={data.filter === "grayscale"}
+          onChange={(to) => {
+            onChange({ ...data, filter: to ? "grayscale" : null });
+          }}
+        />
+      </div>
     </>
   );
 }
