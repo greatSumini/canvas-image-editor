@@ -36,7 +36,9 @@ export const useEditingDatas = () => {
   const add = (urls: string[]) => {
     setDatas([
       ...datas,
-      ...urls.map((url) => ({ src: url, ...INITIAL_EDITING_DATA })),
+      ...urls
+        .filter((url) => datas.findIndex((data) => data.src === url) < 0)
+        .map((url) => ({ src: url, ...INITIAL_EDITING_DATA })),
     ]);
   };
 
