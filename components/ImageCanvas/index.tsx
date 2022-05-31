@@ -49,8 +49,8 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
       canvas.width = WIDTH * scale;
       canvas.height = HEIGHT * scale;
 
-      dx.current = ((WIDTH - CANVAS_IMAGE_SIZE) / 2) * scale;
-      dy.current = ((HEIGHT - CANVAS_IMAGE_SIZE) / 2) * scale;
+      dx.current = (WIDTH * scale - image.naturalWidth) / 2;
+      dy.current = (HEIGHT * scale - image.naturalHeight) / 2;
       width.current = image.naturalWidth;
       height.current = image.naturalHeight;
 
