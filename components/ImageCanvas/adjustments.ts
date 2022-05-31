@@ -3,8 +3,8 @@ import { clamp } from "../../helpers/math";
 export const brightness = (max: number, percent: number) => {
   const brightnessMul =
     percent > 50
-      ? ((percent - 50) / 50) * (max - 1) + 1
-      : (percent / 50) * 0.8 + 0.2;
+      ? (((percent - 50) / 50) * (max - 1)) / 10 + 1
+      : (percent / 50) * 0.6 + 0.4;
 
   return (input: number) => input * brightnessMul;
 };
