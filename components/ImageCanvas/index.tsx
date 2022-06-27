@@ -11,6 +11,7 @@ import {
   temparature,
   whitebalance,
 } from "./adjustments";
+import { CanvasRenderer } from "./canvas";
 import { grayscale, vintage } from "./filters";
 
 const WIDTH = 1120;
@@ -23,68 +24,69 @@ type Props = EditingData & {
 
 export default function ImageCanvas({ src, isVisible, ...options }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>();
+  const downloadCanvasRef = useRef<HTMLCanvasElement>();
   const ctx = useRef<CanvasRenderingContext2D>();
 
-  const imageData = useRef<ImageData>();
+  const renderData = useRef<ImageData>();
+
   const brightnessMax = useRef<number>();
   const redBrightnessMax = useRef<number>();
   const blueBrightnessMax = useRef<number>();
 
+  const scale = useRef<number>();
   const dx = useRef<number>();
   const dy = useRef<number>();
-  const width = useRef<number>();
-  const height = useRef<number>();
 
   useEffect(() => {
-    loadImage(src);
+    loadImage(src, init);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src]);
 
-  const loadImage = (url: string) => {
+  const loadImage = (
+    url: string,
+    onLoad: (image: HTMLImageElement) => void
+  ) => {
     const image = new Image();
     image.crossOrigin = "Anonymous";
     image.onload = () => {
-      initVariables(image);
-      renderImage();
+      onLoad(image);
     };
     image.src = url;
   };
 
-  const initVariables = (image: HTMLImageElement) => {
+  const init = (image: HTMLImageElement) => {
     const { current: canvas } = canvasRef;
 
-    const scale = image.naturalWidth / CANVAS_IMAGE_SIZE;
+    scale.current = image.naturalWidth / CANVAS_IMAGE_SIZE;
 
-    canvas.width = WIDTH * scale;
-    canvas.height = HEIGHT * scale;
+    // const scale = image.naturalWidth / CANVAS_IMAGE_SIZE;
 
-    dx.current = (WIDTH * scale - image.naturalWidth) / 2;
-    dy.current = (HEIGHT * scale - image.naturalHeight) / 2;
-    width.current = image.naturalWidth;
-    height.current = image.naturalHeight;
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
+
+    const _width = CANVAS_IMAGE_SIZE;
+    const _height = image.naturalHeight / scale.current;
+    const _dx = (WIDTH - _width) / 2;
+    const _dy = (HEIGHT - _height) / 2;
+
+    dx.current = _dx;
+    dy.current = _dy;
 
     ctx.current = canvas.getContext("2d");
 
-    ctx.current.imageSmoothingEnabled = false;
-    ctx.current.drawImage(
+    const _imageData = CanvasRenderer(ctx.current, {
       image,
-      dx.current,
-      dy.current,
-      width.current,
-      height.current
-    );
-    const initialData = ctx.current.getImageData(
-      dx.current,
-      dy.current,
-      width.current,
-      height.current
-    );
-    imageData.current = new ImageData(
-      initialData.data,
-      initialData.width,
-      initialData.height
-    );
-    setBrightnessMax(initialData.data);
+      width: _width,
+      height: _height,
+      dx: _dx,
+      dy: _dy,
+    });
+
+    setBrightnessMax(_imageData.data);
+
+    renderData.current = _imageData;
+
+    renderImage(ctx.current, _imageData);
   };
 
   const setBrightnessMax = (data: Uint8ClampedArray) => {
@@ -103,15 +105,19 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
     blueBrightnessMax.current = 255 / Math.max(100, blueMin);
   };
 
-  const renderImage = () => {
-    if (!imageData.current) {
+  const renderImage = (
+    ctx: CanvasRenderingContext2D,
+    inputData: ImageData,
+    loc?: { dx: number; dy: number }
+  ) => {
+    if (!renderData.current) {
       return;
     }
 
     let _imageData = new ImageData(
-      new Uint8ClampedArray(imageData.current.data),
-      imageData.current.width,
-      imageData.current.height
+      new Uint8ClampedArray(inputData.data),
+      inputData.width,
+      inputData.height
     );
 
     const applyBrightness = brightness(
@@ -197,11 +203,39 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
       }
     }
 
-    ctx.current.putImageData(_imageData, dx.current, dy.current);
+    const _dx = loc?.dx ?? dx.current;
+    const _dy = loc?.dy ?? dy.current;
+    ctx.putImageData(_imageData, _dx, _dy);
+  };
+
+  const download = () => {
+    loadImage(src, (image) => {
+      const { current: canvas } = downloadCanvasRef;
+
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+
+      const _ctx = canvas.getContext("2d");
+
+      const _imageData = CanvasRenderer(_ctx, {
+        image,
+        width: canvas.width,
+        height: canvas.height,
+        dx: 0,
+        dy: 0,
+      });
+
+      renderImage(_ctx, _imageData, { dx: 0, dy: 0 });
+
+      var link = document.createElement("a");
+      link.download = "filename.png";
+      link.href = downloadCanvasRef.current.toDataURL();
+      link.click();
+    });
   };
 
   useEffect(() => {
-    renderImage();
+    renderImage(ctx.current, renderData.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     options.clarity,
@@ -216,14 +250,18 @@ export default function ImageCanvas({ src, isVisible, ...options }: Props) {
   ]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        display: isVisible ? "flex" : "none",
-        width: `${WIDTH}px`,
-        height: `${HEIGHT}px`,
-        background: "#333",
-      }}
-    />
+    <>
+      <button onClick={download}>download</button>
+      <canvas
+        ref={canvasRef}
+        style={{
+          display: isVisible ? "flex" : "none",
+          width: `${WIDTH}px`,
+          height: `${HEIGHT}px`,
+          background: "#333",
+        }}
+      />
+      <canvas ref={downloadCanvasRef} style={{ display: "none" }} />
+    </>
   );
 }
